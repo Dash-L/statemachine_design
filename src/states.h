@@ -15,6 +15,6 @@ struct Context {
   int loopsInState = 0;
 };
 
-MAKE_STATES(size_t, Context, STATES)
+CREATE_STATE_MACHINE(Context, STATES)
 
 } // namespace Rocket

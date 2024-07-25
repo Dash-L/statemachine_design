@@ -40,26 +40,22 @@
 #include <array>
 #include <optional>
 
-#define COMMA_SEP(val) val,
+#define ENUM(val) val,
 #define ADD(val) +1
 #define FN(val, ContextType) ::std::optional<State> val(bool, ContextType *);
-#define MAP_ENTRY(val, map_name)                                               \
-  map_name[static_cast<size_t>(State::val)] = val;
+#define MAP_ENTRY(val) &val,
 
 #define STATE(state, X, ...) X(state __VA_OPT__(, ) __VA_ARGS__)
 
-#define MAKE_STATES(Type, ContextType, states)                                 \
-  enum class State : Type { states(COMMA_SEP) };                               \
+#define CREATE_STATE_MACHINE(ContextType, states)                              \
+  enum class State : size_t { states(ENUM) };                                  \
   constexpr size_t NUM_STATES = states(ADD);                                   \
                                                                                \
   states(FN, ContextType);                                                     \
                                                                                \
   using fn_t = ::std::optional<State>(bool, ContextType *);                    \
   using arr_t = ::std::array<fn_t *, NUM_STATES>;                              \
-  constexpr auto stateMap = []() constexpr {                                   \
-    arr_t result = {};                                                         \
-    states(MAP_ENTRY, result) return result;                                   \
-  }();                                                                         \
+  constexpr arr_t stateMap{states(MAP_ENTRY)};                                 \
                                                                                \
   class StateMachine {                                                         \
   public:                                                                      \
