@@ -3,6 +3,7 @@
 #include <optional>
 
 namespace Rocket {
+
 std::optional<State> A(bool init, Context *ctx) {
   std::cout << "Hi from A" << std::endl;
   if (ctx->loopsInState == 2) {
@@ -36,4 +37,5 @@ std::optional<State> D(bool init, Context *ctx) {
   std::cout << "Hi from D" << std::endl;
   return std::make_optional(State::C);
 }
+
 } // namespace Rocket

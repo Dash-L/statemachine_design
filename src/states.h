@@ -9,10 +9,12 @@
   STATE(D, args)
 
 namespace Rocket {
-  struct Context {
-    int totalLoops = 0;
-    int loopsInState = 0;
-  };
 
-  MAKE_STATES(size_t, Context, STATES)
-}
+struct Context {
+  int totalLoops = 0;
+  int loopsInState = 0;
+};
+
+MAKE_STATES(size_t, Context, STATES)
+
+} // namespace Rocket

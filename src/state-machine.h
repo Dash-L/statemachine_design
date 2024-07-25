@@ -8,7 +8,7 @@
      *  STATE(State1, args) \
      *  STATE(State2, args) \
      *  etc...
-     * NOTE: The last line must NOT end with a `\`
+     * NOTE: Ensure that if the last line ends with a `\` (it's not required) there is an empty line before any following code
   * NOTE: It is highly recommended that you wrap the following steps in a namespace of your choosing
     * This is required if you want multiple state machines, since it removes collisions between them
   * Define a struct to store data shared between all states. You might call it `Context`

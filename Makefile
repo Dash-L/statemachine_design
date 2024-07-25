@@ -1,12 +1,9 @@
-all: bin/functions_and_macros bin/horrible_macros
+EXE := test
 
-bin/functions_and_macros: $(wildcard functions_and_macros/*.cpp)
-	g++ functions_and_macros/*.cpp -o bin/functions_and_macros
-
-bin/horrible_macros: horrible_macros/main.cpp
-	g++ horrible_macros/main.cpp -o bin/horrible_macros
+$(EXE): $(wildcard src/*.cpp)
+	$(CXX) src/*.cpp -o $(EXE)
 
 clean:
-	rm -f bin/*
+	rm -f $(EXE)
 
 .PHONY: clean
