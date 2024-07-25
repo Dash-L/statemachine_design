@@ -3,8 +3,7 @@
 
 int main(int argc, char **argv) {
   Rocket::Context ctx{};
-  Rocket::StateMachine rocketStateMachine(Rocket::stateMap, Rocket::State::A,
-                                          &ctx);
+  Rocket::StateMachine rocketStateMachine(Rocket::State::A, &ctx);
 
   for (size_t i = 0; i < 10; i++) {
     std::cout << "Loop " << ctx.totalLoops << ":" << std::endl;

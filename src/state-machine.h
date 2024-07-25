@@ -29,7 +29,7 @@
         * if you don't want to transition yet, return std::nullopt;
   * In the main file (which must include the states header):
     * Create your initial context object
-    * Create a `StateMachine`, passing it stateMap, whatever initial state you want, and the initial context object
+    * Create a `StateMachine`, passing it whatever initial state you want and the initial context object
     * In the loop:
       * Do whatever state agnostic processing you want (potentially involving the context object)
       * Call stateMachine.loop();
@@ -40,25 +40,22 @@
 #include <optional>
 
 #define LIST(val) val,
-#define ADD(val) +1
 #define FN(val, ContextType) ::std::optional<State> val(bool, ContextType *);
 
 #define STATE(state, X, ...) X(state __VA_OPT__(, ) __VA_ARGS__)
 
 #define CREATE_STATE_MACHINE(ContextType, states)                              \
   enum class State : size_t { states(LIST) };                                  \
-  constexpr size_t NUM_STATES = states(ADD);                                   \
                                                                                \
   states(FN, ContextType);                                                     \
                                                                                \
   using fn_t = ::std::optional<State>(bool, ContextType *);                    \
-  using arr_t = ::std::array<fn_t *, NUM_STATES>;                              \
-  constexpr arr_t stateMap{states(LIST)};                                      \
+  constexpr fn_t *stateMap[]{states(LIST)};                                    \
                                                                                \
   class StateMachine {                                                         \
   public:                                                                      \
-    StateMachine(const arr_t stateMap, State initState, Context *ctx)          \
-        : stateMap(stateMap), state(initState), ctx(ctx) {}                    \
+    StateMachine(State initState, Context *ctx)                                \
+        : state(initState), ctx(ctx) {}                                        \
                                                                                \
     void loop() {                                                              \
       auto newState = stateMap[static_cast<size_t>(state)](firstIter, ctx);    \
@@ -75,7 +72,6 @@
                                                                                \
   private:                                                                     \
     bool firstIter = true;                                                     \
-    arr_t stateMap;                                                            \
     State state;                                                               \
     Context *ctx;                                                              \
   };
