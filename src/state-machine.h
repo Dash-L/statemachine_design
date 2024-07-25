@@ -12,10 +12,9 @@
   * NOTE: It is highly recommended that you wrap the following steps in a namespace of your choosing
     * This is required if you want multiple state machines, since it removes collisions between them
   * Define a struct to store data shared between all states. You might call it `Context`
-  * Finally, call the MAKE_STATES macro like so:
-      * MAKE_STATES(EnumType, Context, STATES)
+  * Finally, call the CREATE_STATE_MACHINE macro like so:
+      * CREATE_STATE_MACHINE(Context, STATES)
         * Where:
-          * EnumType is the **integer** type that will back the state enum, this may be something like `size_t` or `uint32_t`, for example
           * Context is the shared data struct you defined above
           * STATES is the macro you defined above
   * Create a corresponding cpp file (say `states.cpp`)
@@ -40,22 +39,21 @@
 #include <array>
 #include <optional>
 
-#define ENUM(val) val,
+#define LIST(val) val,
 #define ADD(val) +1
 #define FN(val, ContextType) ::std::optional<State> val(bool, ContextType *);
-#define MAP_ENTRY(val) &val,
 
 #define STATE(state, X, ...) X(state __VA_OPT__(, ) __VA_ARGS__)
 
 #define CREATE_STATE_MACHINE(ContextType, states)                              \
-  enum class State : size_t { states(ENUM) };                                  \
+  enum class State : size_t { states(LIST) };                                  \
   constexpr size_t NUM_STATES = states(ADD);                                   \
                                                                                \
   states(FN, ContextType);                                                     \
                                                                                \
   using fn_t = ::std::optional<State>(bool, ContextType *);                    \
   using arr_t = ::std::array<fn_t *, NUM_STATES>;                              \
-  constexpr arr_t stateMap{states(MAP_ENTRY)};                                 \
+  constexpr arr_t stateMap{states(LIST)};                                      \
                                                                                \
   class StateMachine {                                                         \
   public:                                                                      \
