@@ -1,11 +1,10 @@
-#include "state-machine.h"
 #include "states.h"
 #include <iostream>
 
 int main(int argc, char **argv) {
-  Context ctx{};
-  StateMachine<RocketState, Context, NUM_Rocket_STATES> rocketStateMachine(
-      RocketStateMap, RocketState::A, &ctx);
+  Rocket::Context ctx{};
+  Rocket::StateMachine rocketStateMachine(Rocket::stateMap, Rocket::State::A,
+                                          &ctx);
 
   for (size_t i = 0; i < 10; i++) {
     std::cout << "Loop " << ctx.totalLoops << ":" << std::endl;
