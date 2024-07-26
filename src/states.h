@@ -2,11 +2,11 @@
 
 #include "state-machine.h"
 
-#define STATES(args...)                                                        \
-  STATE(A, args)                                                               \
-  STATE(B, args)                                                               \
-  STATE(C, args)                                                               \
-  STATE(D, args)
+#define STATES(X)                                                              \
+  X(A)                                                                         \
+  X(B)                                                                         \
+  X(C)                                                                         \
+  X(D)
 
 namespace Rocket {
 

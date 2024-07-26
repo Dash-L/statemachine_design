@@ -4,9 +4,9 @@
  * State Machine Usage
  * Create a header (say `states.h`)
   * In that header, define your states like so:
-    * #define STATES(args...) \
-     *  STATE(State1, args) \
-     *  STATE(State2, args) \
+    * #define STATES(X) \
+     *  X(State1) \
+     *  X(State2) \
      *  etc...
      * NOTE: Ensure that if the last line ends with a `\` (it's not required) there is an empty line before any following code
   * NOTE: It is highly recommended that you wrap the following steps in a namespace of your choosing
@@ -36,25 +36,23 @@
       * Do whatever state agnostic cleanup you want (possibly conditional based on stateMachine.justTransitioned())
  clang-format on */
 
-#include <array>
 #include <optional>
 
 #define LIST(val) val,
-#define FN(val, ContextType) ::std::optional<State> val(bool, ContextType *);
-
-#define STATE(state, X, ...) X(state __VA_OPT__(, ) __VA_ARGS__)
+#define FN(val) ::std::optional<State> val(bool, __Context__ *);
 
 #define CREATE_STATE_MACHINE(ContextType, states)                              \
+  using __Context__ = ContextType;                                             \
   enum class State : size_t { states(LIST) };                                  \
                                                                                \
-  states(FN, ContextType);                                                     \
+  states(FN);                                                                  \
                                                                                \
-  using fn_t = ::std::optional<State>(bool, ContextType *);                    \
+  using fn_t = ::std::optional<State>(bool, __Context__ *);                    \
   constexpr fn_t *stateMap[]{states(LIST)};                                    \
                                                                                \
   class StateMachine {                                                         \
   public:                                                                      \
-    StateMachine(State initState, Context *ctx)                                \
+    StateMachine(State initState, __Context__ *ctx)                            \
         : state(initState), ctx(ctx) {}                                        \
                                                                                \
     void loop() {                                                              \
@@ -73,5 +71,5 @@
   private:                                                                     \
     bool firstIter = true;                                                     \
     State state;                                                               \
-    Context *ctx;                                                              \
+    __Context__ *ctx;                                                          \
   };
