@@ -2,12 +2,6 @@
 
 #include "state-machine.h"
 
-#define STATES(X)                                                              \
-  X(A)                                                                         \
-  X(B)                                                                         \
-  X(C)                                                                         \
-  X(D)
-
 namespace Rocket {
 
 struct Context {
@@ -15,6 +9,6 @@ struct Context {
   int loopsInState = 0;
 };
 
-CREATE_STATE_MACHINE(Context, STATES)
+CREATE_STATE_MACHINE(Context, A, B, C, D)
 
 } // namespace Rocket

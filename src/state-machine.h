@@ -3,20 +3,11 @@
 /* clang-format off
  * State Machine Usage
  * Create a header (say `states.h`)
-  * In that header, define your states like so:
-    * #define STATES(X) \
-     *  X(State1) \
-     *  X(State2) \
-     *  etc...
-     * NOTE: Ensure that if the last line ends with a `\` (it's not required) there is an empty line before any following code
   * NOTE: It is highly recommended that you wrap the following steps in a namespace of your choosing
     * This is required if you want multiple state machines, since it removes collisions between them
   * Define a struct to store data shared between all states. You might call it `Context`
-  * Finally, call the CREATE_STATE_MACHINE macro like so:
-      * CREATE_STATE_MACHINE(Context, STATES)
-        * Where:
-          * Context is the shared data struct you defined above
-          * STATES is the macro you defined above
+  * Call the CREATE_STATE_MACHINE macro like so:
+      * CREATE_STATE_MACHINE(Context, State1, State2, etc.)
   * Create a corresponding cpp file (say `states.cpp`)
     * Implement one function per state, the function declarations are like the following (remember to wrap in the same namespace as above, if any):
       * std::optional<State> State1(bool initialize, Context *ctx) { ... }
@@ -38,21 +29,17 @@
 
 #include <optional>
 
-#define LIST(val) val,
-#define FN(val) ::std::optional<State> val(bool, __Context__ *);
-
-#define CREATE_STATE_MACHINE(ContextType, states)                              \
-  using __Context__ = ContextType;                                             \
-  enum class State : size_t { states(LIST) };                                  \
+#define CREATE_STATE_MACHINE(ContextType, states...)                           \
+  enum class State : size_t { states };                                        \
                                                                                \
-  states(FN);                                                                  \
+  using fn_t = ::std::optional<State>(bool, ContextType *);                    \
+  fn_t states;                                                                 \
                                                                                \
-  using fn_t = ::std::optional<State>(bool, __Context__ *);                    \
-  constexpr fn_t *stateMap[]{states(LIST)};                                    \
+  constexpr fn_t *stateMap[]{states};                                          \
                                                                                \
   class StateMachine {                                                         \
   public:                                                                      \
-    StateMachine(State initState, __Context__ *ctx)                            \
+    StateMachine(State initState, ContextType *ctx)                            \
         : state(initState), ctx(ctx) {}                                        \
                                                                                \
     void loop() {                                                              \
@@ -71,5 +58,5 @@
   private:                                                                     \
     bool firstIter = true;                                                     \
     State state;                                                               \
-    __Context__ *ctx;                                                          \
+    ContextType *ctx;                                                          \
   };
